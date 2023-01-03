@@ -16,7 +16,7 @@ ECHO_VR_EXE_PATH = "D:\\Oculus\\Software\\Software\\ready-at-dawn-echo-arena\\bi
 # QuestのIPアドレス。環境に合わせて変更してください。
 QUEST_HOST = "192.168.1.1"
 # ローカルのIPアドレス。変更する必要はありません。
-LOCAL_HOST = "192.168.1.1"
+LOCAL_HOST = "localhost"
 # 作成するサーバーのリージョン。uscn, us-central-2, us-central-3, use, usw, euw, jp, aus, sinが許容されます。
 # 必要に応じて変更してください。
 SERVER_REGION = "jp"

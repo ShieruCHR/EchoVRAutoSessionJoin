@@ -102,7 +102,7 @@ region = inquirer.select(
         Choice("aus", "オーストラリア"),
         Choice("sin", "シンガポール")
     ],
-    default=config.get('DEFAULT_SERVER_REGION')
+    default=config.get('DEFAULT_SERVER_REGION', 'jp')
 ).execute()
 create_session(region=region)
 

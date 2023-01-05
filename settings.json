@@ -1,0 +1,38 @@
+{
+    "ECHO_VR_EXE_PATH": "D:\\Oculus\\Software\\Software\\ready-at-dawn-echo-arena\\bin\\win10\\echovr.exe",
+    "QUEST_HOST": "192.168.1.30",
+    "LOCAL_HOST": "localhost",
+    "DEFAULT_SERVER_REGION": "jp",
+    "ECHO_VR_CONFIG_PATH": null,
+    "_Desc": "ECHO_VR_CONFIG_PATHの値は、null=自動選択と解釈します。",
+    "API_CALL_INTERVAL": 3,
+    "QUEST_TEAM_ID": 0,
+    "AUTO_RULES": {
+        "enabled": true,
+        "desc": "Questでセッションに参加した際、ゲームルールを変更するかどうか。enabledをfalseにすると無効化します。",
+        "rules": {
+            "MINUTES": 10,
+            "BLUE ROUNDS WON": 0,
+            "SECONDS": 0,
+            "BLUE SCORE": 0,
+            "MERCY SCORE DIFF": 20,
+            "ORANGE SCORE": 0,
+            "GOAL STOPS TIME": false,
+            "ROUND WAIT TIME": 59,
+            "CARRY POINTS OVER": false,
+            "DISC LOCATION": 1,
+            "ROUNDS PLAYED": 1,
+            "CATAPULT TIME": 12,
+            "RESPAWN TIME": 3,
+            "ROUND COUNT": 3,
+            "SELF-GOALING": true,
+            "TEAM ONLY VOICE": true,
+            "ORANGE ROUNDS WON": 0,
+            "OVERTIME": 0,
+            "STANDARD CHASSIS": true,
+            "MERCY ENABLED": true,
+            "DISC CURVE": false,
+            "GOALIE PING ADV": false
+        }
+    }
+}

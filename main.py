@@ -13,31 +13,16 @@ from InquirerPy.base.control import Choice
 # これらの設定は、プログラムを正しく動作させるために必要です。
 # 各項目の説明を読みながら設定してください。
 
-# EchoVRのexeパス。環境に合わせて変更してください。
-ECHO_VR_EXE_PATH = "D:\\Oculus\\Software\\Software\\ready-at-dawn-echo-arena\\" + \
-    "bin\\win10\\echovr.exe"
-# QuestのIPアドレス。環境に合わせて変更してください。
-QUEST_HOST = "192.168.1.1"
-# ローカルのIPアドレス。変更する必要はありません。
-LOCAL_HOST = "localhost"
-# 作成するサーバーリージョンの既定値。必要に応じて変更してください。
-DEFAULT_SERVER_REGION = "jp"
-# EchoVRのconfigパス。基本的には変更する必要はありません。
-ECHO_VR_CONFIG_PATH = f"C:\\Users\\{os.getlogin()}\\AppData\\Local\\rad\\loneecho\\settings_mp_v2.json"
-# API呼び出し 再試行のインターバル。0に近づけるほどより頻繁にAPIを呼び出しますが、コンピューターに負荷がかかる可能性があります。
-API_CALL_INTERVAL = 3
-# Questでセッションに参加した際、割り当てるチームのID
-# 1=オレンジ, 0=ブルー, -1=スペクテイター
-QUEST_TEAM_ID = 1
-# Questでセッションに参加した際、ゲームルールを変更するかどうか。
-# ゲームルールは、default_gamerule.jsonで変更できます。
-CHANGE_RULES_ON_JOIN = True
 # [環境設定ここまで]
 
-
-with open(ECHO_VR_CONFIG_PATH) as f:
+with open("settings.json", encoding="UTF-8") as f:
     config = json.load(f)
-    if not config["game"]["EnableAPIAccess"]:
+    if config.get("ECHO_VR_CONFIG_PATH") is None:
+        config["ECHO_VR_CONFIG_PATH"] = f"C:\\Users\\{os.getlogin()}\\AppData\\Local\\rad\\loneecho\\settings_mp_v2.json"
+
+with open(config.get("ECHO_VR_CONFIG_PATH")) as f:
+    game_config = json.load(f)
+    if not game_config["game"]["EnableAPIAccess"]:
         selection = inquirer.select(
             message="API アクセスが無効になっています。どうしますか？",
             choices=[
@@ -50,9 +35,9 @@ with open(ECHO_VR_CONFIG_PATH) as f:
 
         ).execute()
         if selection == "enable":
-            config["game"]["EnableAPIAccess"] = True
-            with open(ECHO_VR_CONFIG_PATH, mode="w") as ff:
-                json.dump(config, ff)
+            game_config["game"]["EnableAPIAccess"] = True
+            with open(config.get("ECHO_VR_CONFIG_PATH"), mode="w") as ff:
+                json.dump(game_config, ff)
         elif selection == "exit":
             sys.exit(0)
         elif selection == "continue":
@@ -61,47 +46,46 @@ with open(ECHO_VR_CONFIG_PATH) as f:
 
 def create_session(region="jp"):
     subprocess.Popen(
-        f"{ECHO_VR_EXE_PATH} -noovr -spectatorstream -level mpl_arena_a -region {region}")
+        f"{config.get('ECHO_VR_EXE_PATH')} -noovr -spectatorstream -level mpl_arena_a -region {region}")
 
 
 def get_session_id():
     while True:
         try:
-            response = requests.get(f"http://{LOCAL_HOST}:6721/session")
+            response = requests.get(f"http://{config.get('LOCAL_HOST')}:6721/session")
             if response.ok:
                 return response.json()["sessionid"]
         except:
             pass
-        time.sleep(API_CALL_INTERVAL)
+        time.sleep(config.get('API_CALL_INTERVAL'))
 
 
 def join_in_quest():
     while True:
         try:
             response = requests.post(
-                f"http://{QUEST_HOST}:6721/join_session", json={"session_id": session_id, "team_idx": QUEST_TEAM_ID})
+                f"http://{config.get('QUEST_HOST')}:6721/join_session", json={"session_id": session_id, "team_idx": config.get('QUEST_TEAM_ID')})
             if response.json()["err_code"] == 0:
-                if CHANGE_RULES_ON_JOIN:
+                if config.get("AUTO_RULES").get("enabled"):
                     print("ゲームルールを設定中…")
                     set_rules()
                 break
         except:
             pass
-        time.sleep(API_CALL_INTERVAL)
+        time.sleep(config.get('API_CALL_INTERVAL'))
 
 def set_rules():
-    with open("default_gamerule.json") as f:
-        rules = json.load(f)
-        while True:
-            try:
-                response = requests.post(
-                    f"http://{QUEST_HOST}:6721/set_rules", json=rules
-                )
-                if response.json()["err_code"] == 0:
-                    break
-            except:
-                pass
-            time.sleep(API_CALL_INTERVAL)
+    rules = config.get("AUTO_RULES").get("rules")
+    while True:
+        try:
+            response = requests.post(
+                f"http://{config.get('QUEST_HOST')}:6721/set_rules", json=rules
+            )
+            if response.json()["err_code"] == 0:
+                break
+        except:
+            pass
+        time.sleep(config.get('API_CALL_INTERVAL'))
 
 
 print("セッションを作成します…")
@@ -118,7 +102,7 @@ region = inquirer.select(
         Choice("aus", "オーストラリア"),
         Choice("sin", "シンガポール")
     ],
-    default=DEFAULT_SERVER_REGION
+    default=config.get('DEFAULT_SERVER_REGION')
 ).execute()
 create_session(region=region)
 
@@ -140,7 +124,7 @@ commands = {
     "exit": ("プログラムを終了します。", lambda: sys.exit(0)),
     "rejoin": ("QuestでEchoVRのセッションに再参加します。", join_in_quest),
     "session": ("現在のセッションIDを確認します。", lambda: print(session_id)),
-    "rules": ("ルールを設定します。", set_rules)
+    "rules": ("ルールを再設定します。", set_rules)
 }
 while True:
     cmd = input("> ")

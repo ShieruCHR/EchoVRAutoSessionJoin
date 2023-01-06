@@ -4,12 +4,10 @@
     "LOCAL_HOST": "localhost",
     "DEFAULT_SERVER_REGION": "jp",
     "ECHO_VR_CONFIG_PATH": null,
-    "_Desc": "ECHO_VR_CONFIG_PATHの値は、null=自動選択と解釈します。",
     "API_CALL_INTERVAL": 3,
     "QUEST_TEAM_ID": 0,
     "AUTO_RULES": {
         "enabled": true,
-        "desc": "Questでセッションに参加した際、ゲームルールを変更するかどうか。enabledをfalseにすると無効化します。",
         "rules": {
             "MINUTES": 10,
             "BLUE ROUNDS WON": 0,

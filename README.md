@@ -11,7 +11,7 @@ https://www.python.org/downloads/ から、最新の安定版Pythonをダウン�
 後述する`Configuration`セクションをごにょごにょしながら設定してください。  
 唯一、`ECHO_VR_EXE_PATH`に関しては円マーク（バックスラッシュ）を二枚重ねしないといけないことに注意してください。  
 例:  
-:x: `C:\Program Files\Oculus\Software\EchoVR\echovr.exe`
+:x: `C:\Program Files\Oculus\Software\EchoVR\echovr.exe`  
 :o: `C:\\Program Files\\Oculus\\Software\\EchoVR\\echovr.exe`
 
 `QUEST_HOST`の設定も必要です。Sparkから拾ってくるか、Questの設定から確認してください。
